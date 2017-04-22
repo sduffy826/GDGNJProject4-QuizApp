@@ -25,18 +25,19 @@ public class ResultsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.results_activity);
 
+        // This just gets the results string from the bundle associated with the current intent
+        // and it'll replace the text for the 'results' (TextView) with the bundle text, take a
+        // look at the 'done' method in the MainActivity.java file to see more
         Intent intentExtras = getIntent();
         Bundle bundle = intentExtras.getExtras();
         if (bundle != null) {
             String result = bundle.getString("results");
             if (result != null) {
-                TextView tv = (TextView)findViewById(R.id.results);
+                TextView tv = (TextView) findViewById(R.id.results);
                 if (tv != null) {
                     tv.setText(result);
                 }
             }
         }
-
-
     }
 }

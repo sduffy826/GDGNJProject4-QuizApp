@@ -14,16 +14,9 @@ tools:context="com.example.android.gdgnjproject4_quizapp.MainActivity">
     android:orientation="vertical"
     android:padding="16dp">
 
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Trivia"/>
-
     <TextView
         android:id="@+id/question"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/Question"
         android:text="Question"/>
 
     <LinearLayout
@@ -40,14 +33,12 @@ tools:context="com.example.android.gdgnjproject4_quizapp.MainActivity">
         android:orientation="horizontal">
     <Button
         android:id="@+id/buttonPrevious"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/Buttons"
         android:text="Previous"
         android:onClick="buttonPrevious"/>
     <Button
         android:id="@+id/buttonNext"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/Buttons"
         android:text="Next"
         android:onClick="buttonNext"/>
     </LinearLayout>

@@ -32,7 +32,9 @@ public class MainActivity extends AppCompatActivity {
     private int responseId;
 
     /**
-     * onClick for the 'next' button, we store the response in questionResponses map
+     * onClick for the 'next' button, we store the users response; if we're on the last question
+     * then we'll call the done method otherwise we'll call the processQuestion with the next
+     * question index to be processed.
      *
      * @param view
      */
@@ -46,17 +48,17 @@ public class MainActivity extends AppCompatActivity {
             questionResponses.put(questionId, rb.getText().toString());
         }
 
-        if (questionOn < (questionNumbers.size()-1)) {
+        if (questionOn < (questionNumbers.size() - 1)) {
             // Got to the next question
             processQuestion(++questionOn);
-        }
-        else {
+        } else {
             done();
         }
     }
 
     /**
-     * onClick for the 'previous' button
+     * onClick for the 'previous' button, call processQuestion method passing in the prior questions
+     * index position
      *
      * @param view
      */
@@ -65,47 +67,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Done with the survey
+     * Done with the survey, we'll show the results activity
      */
     private void done() {
         Intent intent = new Intent(MainActivity.this, ResultsActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString("results",getResults());
+        bundle.putString("results", getResults());
         intent.putExtras(bundle);
         startActivity(intent);
     }
 
-    private String getResults() {
-        int numberCorrect = 0;
-        int totalQuests = 0;
-        String rtnString = "";
-        // Remember questionsNumbers is an array that contains the questionId's
-        for (int i = 0; i < questionNumbers.size(); i++) {
-            totalQuests++;
-            int questionId = questionNumbers.get(i);
-            Question quest = quiz.get(questionId);
-
-            String question = quest.getQuestion();
-            String answer = quest.getAnswer();
-            String userResponse = questionResponses.get(questionId);
-
-            rtnString += question + "\n\t" + userResponse + "\n";
-            if (answer.equalsIgnoreCase(userResponse)) numberCorrect++;
-        }
-        rtnString += "\n";
-        if (numberCorrect == 0) {
-            rtnString += "Really... my dish towel could do better";
-        }
-        else if (numberCorrect == totalQuests) {
-            rtnString += "Impressive, you are a genius";
-        }
-        else {
-            rtnString += String.format("You got %d out of %d correct, that's an %d%%",
-                    numberCorrect,totalQuests,Math.round((numberCorrect*100.0)/totalQuests));
-        }
-        return rtnString;
-    }
-
+    /**
+     * For debugging only, it dumps out the contents of the quiz
+     */
     private void dumpQuestions() {
         Iterator<Integer> questionIterator = quiz.keySet().iterator();
         while (questionIterator.hasNext()) {
@@ -119,7 +93,45 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Return an unused resource id (so that we might use it)
+     * This method builds a string with the results of the quiz
+     * @return String with the questions/responses and a overall summary line... this is a pretty
+     * rudimentary result... could prettify down the road
+     */
+    private String getResults() {
+        int numberCorrect = 0;
+        int totalQuests = 0;
+        String rtnString = "";
+
+        // Remember questionsNumbers is an array that contains the questionId's
+        for (int i = 0; i < questionNumbers.size(); i++) {
+            totalQuests++;
+            int questionId = questionNumbers.get(i);                  // Get question id
+            Question quest = quiz.get(questionId);                    // Get the question object
+
+            String question = quest.getQuestion();                    // The question text
+            String answer = quest.getAnswer();                        // The correct answer
+            String userResponse = questionResponses.get(questionId);  // The users answer
+
+            rtnString += question + "\n\t" + userResponse + "\n";
+            if (answer.equalsIgnoreCase(userResponse)) numberCorrect++;
+        }
+        rtnString += "\n";
+
+        // Last line is a summary of how the user did
+        if (numberCorrect == 0) {
+            rtnString += "Really... my dish towel could do better";
+        } else if (numberCorrect == totalQuests) {
+            rtnString += "Impressive, everything right, you're a jeanyus"; // intentional spelling:)
+        } else {
+            rtnString += String.format("You got %d out of %d correct, that's a %d%%",
+                    numberCorrect, totalQuests, Math.round((numberCorrect * 100.0) / totalQuests));
+        }
+        return rtnString;
+    }
+
+    /**
+     * Return an unused resource id, done so we don't generate resource id's that collide with
+     * other artifacts
      *
      * @param startNum the starting int to search for
      * @return an unused resource id
@@ -135,7 +147,9 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Initialize app attributes, primary job is to loop thru the string resources and identify
-     * all the questions/answers/responses we should use in the app.
+     * all the questions/answers/responses we should use in the app.  When done with this the
+     * quiz (map) has the attributes for the quiz (the questions, available responses and the
+     * correct answer).
      */
     private void initApp() {
         questionOn = -1;
@@ -161,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
                     pos = 9;
                 }
 
-                if (pos != 0) {
+                if (pos != 0) {  // Got a resource I care about
                     // Get the resource id
                     int strId = getResources().getIdentifier(fieldName, "string", getPackageName());
 
@@ -169,18 +183,14 @@ public class MainActivity extends AppCompatActivity {
                     int questionNumber = Integer.parseInt(fieldName.substring(pos, pos + 3));
                     String theText = getString(strId);
 
-                    Question quest = null;
-                    try {
-                        quest = quiz.get(questionNumber);
-                    } catch (Exception e) {
-                        // Nothing to do;
-                    }
+                    Question quest = quiz.get(questionNumber);
                     if (quest == null) {
                         quest = new Question(questionNumber);
                         quiz.put(questionNumber, quest);
                         questionNumbers.add(questionNumber);
                         questionOn = 0; // We'll start with first question
                     }
+                    // Add text to correct object attribute ('Q'uestion, 'R'esponse, 'A'nswer)
                     switch (type) {
                         case 'Q':
                             quest.setQuestion(theText);
@@ -193,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
                             break;
                     }
 
-                    // Log message
+                    // Log debugging message
                     Log.d("MainActivity", "Got resource: " + questionNumber +
                             " type: " + type + " " +
                             getString(strId).toString());
@@ -201,9 +211,18 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }
+        // Have all the questions, sort it so that we process in order... we did this so that
+        // app isn't dependent on attributes in the xml file (i.e. supports question id skipping
+        // numbers)
         Collections.sort(questionNumbers);
     }
 
+    /**
+     * Calls initApp (initialise app attributes), dumpQuestions (for debugging), processQuestion
+     * that puts up the question/responses on the screen, and setButtons to set whether the
+     * buttons are available or not (i.e. can't click next until user enters a response)
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -214,6 +233,12 @@ public class MainActivity extends AppCompatActivity {
         setButtons();
     }
 
+    /**
+     * This has the logic to handle the question index passed in; it sets the appropriate text
+     * on the screen and creates the group of radio buttons for the user to choose their response
+     * from (it adds them as children to the 'responses' linear layout)
+     * @param questionArrayPosition
+     */
     private void processQuestion(int questionArrayPosition) {
         responseId = 0;
         if (questionArrayPosition >= 0 && questionArrayPosition < questionNumbers.size()) {
@@ -224,18 +249,23 @@ public class MainActivity extends AppCompatActivity {
                 TextView questionTextView = (TextView) findViewById(R.id.question);
                 questionTextView.setText(quest.getQuestion());
 
+                // Identify the linearLayout that we'll add the radio buttons to
                 LinearLayout linearLayout = (LinearLayout) findViewById(R.id.responses);
-                // If has any children then remove them
+
+                // If layout has any children then remove them
                 if (linearLayout.getChildCount() > 0) {
                     linearLayout.removeAllViews();
                 }
 
+                // Create array to hold the buttons (coulda used single obj but did this way in
+                // case need references later); we also create the radio group that has the buttons
                 int numButtons = quest.getResponses().size();
                 RadioButton[] radioButtons = new RadioButton[numButtons];
                 RadioGroup radioGroup = new RadioGroup(this);
                 radioGroup.setOrientation(RadioGroup.VERTICAL);
 
-                // set listener to set the responseId the user selected
+                // set listener for radioGroup, it just stores the responseId the user checked, we
+                // also call setButtons so that the button will become enabled
                 radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
@@ -244,6 +274,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
+                // This loop creates a button for each of the questions responses that are available
                 for (int i = 0; i < numButtons; i++) {
                     String aResponse = quest.getResponses().get(i);
 
@@ -273,6 +304,7 @@ public class MainActivity extends AppCompatActivity {
         buttonPrev = (questionOn > 0);
         buttonNext = (responseId != 0);
 
+        // Get object references for the buttons
         Button buttPrev = (Button) findViewById(R.id.buttonPrevious);
         Button buttNext = (Button) findViewById(R.id.buttonNext);
 
