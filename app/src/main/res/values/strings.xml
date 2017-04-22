@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">"GDGNJ Project 4 - Quiz App "</string>
+
+    <string name="question_001">What is the capital of Arizona</string>
+    <string name="answer_001">Phoenix</string>
+    <string name="response_001_1">Tuscon</string>
+    <string name="response_001_2">Flagstaff</string>
+    <string name="response_001_3">Scottsdale</string>
+    <string name="response_001_4">Glendale</string>
+    <string name="response_001_5">Phoenix</string>
+
+    <string name="question_002">Who created the first car</string>
+    <string name="answer_002">Mercedes-Benz</string>
+    <string name="response_002_1">Cheverolet</string>
+    <string name="response_002_2">Mercedes-Benz</string>
+    <string name="response_002_3">Ford</string>
+    <string name="response_002_4">Saab</string>
+
+    <string name="question_003">The word Gobbledygook is</string>
+    <string name="answer_003">From the sounds turkeys make</string>
+    <string name="response_003_1">From the sounds turkeys make</string>
+    <string name="response_003_2">The slime trail created by extra terrestrial creatures</string>
+    <string name="response_003_3">Used to describe the mess of phone lines in a pbx switch</string>
+
+    <string name="question_004">Thrashing is</string>
+    <string name="answer_004">When computer is constantly swapping memory</string>
+    <string name="response_004_1">Used to describe when a shark attacks a bait bucket</string>
+    <string name="response_004_2">When computer is constantly swapping memory</string>
+    <string name="response_004_3">Group of individuals that gossip about others</string>
+    <string name="response_004_4">Type of music known for melodius/calming effect</string>
+
+    <string name="question_005">Preparation H removes puffiness around your eyes</string>
+    <string name="answer_005">False</string>
+    <string name="response_005_1">True</string>
+    <string name="response_005_2">False</string>
+
+
+</resources>
