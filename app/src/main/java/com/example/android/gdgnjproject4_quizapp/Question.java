@@ -2,22 +2,24 @@ package com.example.android.gdgnjproject4_quizapp;
 import java.util.ArrayList;
 import java.util.List;
 /**
+ * Simple java object to store question attributes.
  * Created by seanduffy on 4/21/17.
  */
 
 public class Question {
-    int questionId;
-    private String question;
-    private String answer;
-    private List<String> responses;
+    int questionId;                  // Identifier (the nnn value from strings.xml
+    private String question;         // Question text
+    private String answer;           // The answer
+    private List<String> responses;  // List of possible responses (this is the list of radio opts)
 
-    public Question(int questNum) {
+    public Question(int questNum) {  // Constructor only takes the identifier
         questionId = questNum;
         question = null;
         answer = null;
         responses = new ArrayList<String>();
     }
 
+    // Simple getters/setters
     public int getQuestionId() {
         return questionId;
     }
